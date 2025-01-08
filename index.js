@@ -4,14 +4,13 @@ const mongoose = require('mongoose');
 require('dotenv').config()
 const cors = require('cors');
 const { swaggerUi, swaggerDocs } = require('./config/Swagger');
+const connectDB = require('./config/DB.config');
 
-
-const dburl = process.env.MONGOURL;
-mongoose.connect(dburl)
 const app = express()
-const port = 8000;
+const port = process.env.PORT;
 app.use(express.json())
 app.use(cors())
+connectDB();
 
 
 
