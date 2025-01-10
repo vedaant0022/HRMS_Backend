@@ -5,6 +5,7 @@ const cloudinary = require('../config/cloudinary');
 const User = require('../models/User');
 
 
+
 const createUser = async (req, res) => {
     try {
         const { email, password, role, personalDetails, jobDetails } = req.body;
