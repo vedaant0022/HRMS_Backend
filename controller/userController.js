@@ -1,7 +1,8 @@
 
 const bcrypt = require('bcryptjs');
-const User = require('../models/User');
+
 const cloudinary = require('../config/cloudinary');
+const User = require('../models/User');
 
 
 const createUser = async (req, res) => {

@@ -9,13 +9,13 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'API documentation for HRMS application',
       contact: {
-        name: 'Your Name',
-        email: 'your.email@example.com',
+        name: 'Vedaant Sankhe',
+        email: 'vedaant.sankhe@gmail.com',
       },
     },
     servers: [
       {
-        url: 'http://localhost:8000', 
+        url: 'http://localhost:3000', 
       },
     ],
   },
