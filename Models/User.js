@@ -39,22 +39,23 @@ const UserSchema = new mongoose.Schema(
       designation: { type: String },
       department: { type: String },
       dateOfJoining: { type: Date },
-      managerId: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User', 
+      managerId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
-      }, 
-      HRid: { 
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: 'User', 
-        required: true, 
+      },
+      HRid: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
       },
     },
 
     documents: [
       {
-        doctype: { type: String }, 
+        doctype: { type: String },
         url: { type: String },
+        filename: { type: String }, // New field for custom filename
         uploadedAt: { type: Date, default: Date.now },
       },
     ],
@@ -97,7 +98,7 @@ const UserSchema = new mongoose.Schema(
     attendanceRecords: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'AttendanceRecord', 
+        ref: 'AttendanceRecord',
       },
     ],
 
@@ -106,7 +107,7 @@ const UserSchema = new mongoose.Schema(
       default: true,
     },
   },
-  { timestamps: true } 
+  { timestamps: true }
 );
 
-module.exports = mongoose.model('User', UserSchema);
+module.exports = mongoose.model('User', UserSchema, 'Users');
