@@ -9,7 +9,7 @@ const ApplyLeavesSchema = new mongoose.Schema(
     },
     leaveType: {
       type: String,
-      enum: ['sick', 'casual', 'earned', 'maternity', 'paternity', 'other'],
+      enum: ['Sick', 'Causal', 'Paid', 'Other'],
       required: true,
     },
     startDate: {
@@ -25,8 +25,8 @@ const ApplyLeavesSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'approved', 'rejected'],
-      default: 'pending',
+      enum: ['Pending', 'Approved', 'Rejected'],
+      default: 'Pending',
     },
     appliedAt: {
       type: Date,
@@ -34,7 +34,7 @@ const ApplyLeavesSchema = new mongoose.Schema(
     },
     approvedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // References the manager or HR who approved the leave
+      ref: 'User', 
     },
   },
   { timestamps: true }

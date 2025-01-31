@@ -21,7 +21,7 @@ const createUser = async (req, res) => {
 
         const newUser = new User({
             email,
-            password: hashedPassword,
+            password:hashedPassword,
             role,
             personalDetails,
             jobDetails,

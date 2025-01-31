@@ -55,7 +55,7 @@ const UserSchema = new mongoose.Schema(
       {
         doctype: { type: String },
         url: { type: String },
-        filename: { type: String }, // New field for custom filename
+        filename: { type: String }, 
         uploadedAt: { type: Date, default: Date.now },
       },
     ],
@@ -87,7 +87,6 @@ const UserSchema = new mongoose.Schema(
       },
     ],
 
-
     attendanceRegularization: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -99,6 +98,12 @@ const UserSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'AttendanceRecord',
+      },
+    ],
+    TaskAssigned: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Task',
       },
     ],
 
