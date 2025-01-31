@@ -102,8 +102,7 @@ const loginUser = async (req, res) => {
       if (!email || !password) {
         return res.status(400).json({ message: 'Email and password are required' });
       }
-  
-      // Convert email to lowercase to avoid case sensitivity issues
+
       const user = await User.findOne({ email: email.toLowerCase() });
   
       if (!user) {

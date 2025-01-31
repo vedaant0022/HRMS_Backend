@@ -1,5 +1,6 @@
 const express = require('express');
 const { applyLeave, updateLeaveStatus, getLeavesByEmployee } = require('../controller/leaveController');
+const authMiddleware = require('../middleware/auth');
 
 
 const router = express.Router();
@@ -45,7 +46,7 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.post('/apply', applyLeave);
+router.post('/apply', authMiddleware, applyLeave);
 
 /**
  * @swagger
@@ -85,8 +86,8 @@ router.post('/apply', applyLeave);
  *       500:
  *         description: Internal server error
  */
-router.post('/update-status/:leaveId', updateLeaveStatus);
+router.post('/update-status/:leaveId',authMiddleware, updateLeaveStatus);
 
-router.post('/getleaves', getLeavesByEmployee);
+router.post('/getleaves', authMiddleware, getLeavesByEmployee);
 
 module.exports = router;
