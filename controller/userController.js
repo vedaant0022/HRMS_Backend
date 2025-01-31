@@ -1,9 +1,9 @@
 
 const bcrypt = require('bcryptjs');
-
 const cloudinary = require('../config/cloudinary');
 const User = require('../Models/User');
-
+const jwt = require('jsonwebtoken');
+const JWT_SECRET = process.env.JWT_SECRET
 
 
 const createUser = async (req, res) => {
@@ -95,6 +95,44 @@ const uploadDocuments = async (req, res) => {
     }
 };
 
+const loginUser = async (req, res) => {
+    try {
+      const { email, password } = req.body;
+  
+      if (!email || !password) {
+        return res.status(400).json({ message: 'Email and password are required' });
+      }
+  
+      // Convert email to lowercase to avoid case sensitivity issues
+      const user = await User.findOne({ email: email.toLowerCase() });
+  
+      if (!user) {
+        return res.status(404).json({ message: 'User not found. Please register first.' });
+      }
+  
+      const isMatch = await bcrypt.compare(password, user.password);
+      if (!isMatch) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
+  
+      const token = jwt.sign(
+        { userId: user._id, role: user.role },
+        JWT_SECRET,
+        { expiresIn: '12h' }
+      );
+  
+      res.status(200).json({
+        message: 'Login successful',
+        token,
+        user
+      });
+    } catch (error) {
+      console.error('Login error:', error);
+      res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+  };
+
+
 module.exports = {
-    createUser, uploadDocuments
+    createUser, uploadDocuments,loginUser
 };
