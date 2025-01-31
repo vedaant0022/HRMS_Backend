@@ -1,5 +1,5 @@
 const ApplyLeaves = require('../models/ApplyLeaves');
-const User = require('../models/User');
+const User = require('../Models/User');
 
 const applyLeave = async (req, res) => {
   try {

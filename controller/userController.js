@@ -2,7 +2,7 @@
 const bcrypt = require('bcryptjs');
 
 const cloudinary = require('../config/cloudinary');
-const User = require('../models/User');
+const User = require('../Models/User');
 
 
 
