@@ -42,12 +42,10 @@ const UserSchema = new mongoose.Schema(
       managerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
       },
       HRid: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true,
       },
     },
 

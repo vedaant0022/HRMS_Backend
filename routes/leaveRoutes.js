@@ -1,5 +1,5 @@
 const express = require('express');
-const { applyLeave, updateLeaveStatus } = require('../controller/leaveController');
+const { applyLeave, updateLeaveStatus, getLeavesByEmployee } = require('../controller/leaveController');
 
 
 const router = express.Router();
@@ -86,5 +86,7 @@ router.post('/apply', applyLeave);
  *         description: Internal server error
  */
 router.post('/update-status/:leaveId', updateLeaveStatus);
+
+router.post('/getleaves', getLeavesByEmployee);
 
 module.exports = router;

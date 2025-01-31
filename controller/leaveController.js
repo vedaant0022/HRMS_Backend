@@ -1,9 +1,10 @@
-const ApplyLeaves = require('../models/ApplyLeaves');
+const ApplyLeaves = require('../Models/ApplyLeave');
 const User = require('../Models/User');
 
 const applyLeave = async (req, res) => {
   try {
     const { employeeId, leaveType, startDate, endDate, reason } = req.body;
+    console.log(employeeId, leaveType, startDate, endDate);
 
     if (!employeeId || !leaveType || !startDate || !endDate) {
       return res.status(400).json({ message: 'Missing required fields' });
@@ -13,11 +14,10 @@ const applyLeave = async (req, res) => {
     if (!employee) {
       return res.status(404).json({ message: 'Employee not found' });
     }
+
     if (new Date(startDate) > new Date(endDate)) {
       return res.status(400).json({ message: 'Start date cannot be after end date' });
     }
-
-    // const User = await User.findById(employeeId);
 
     const newLeave = new ApplyLeaves({
       employeeId,
@@ -28,7 +28,9 @@ const applyLeave = async (req, res) => {
     });
 
     await newLeave.save();
-    // await User.appliedLeaves;
+
+    employee.appliedLeaves.push(newLeave._id);
+    await employee.save(); 
 
     res.status(201).json({
       message: 'Leave request submitted successfully',
@@ -48,18 +50,15 @@ const updateLeaveStatus = async (req, res) => {
       const { leaveId } = req.params;
       const { status, approvedBy } = req.body;
   
-      // Validate the status
       if (!status || !['Approved', 'Rejected'].includes(status)) {
         return res.status(400).json({ message: 'Invalid status. Status must be "Approved" or "Rejected"' });
       }
   
-      // Find the leave request by ID
       const leaveRequest = await ApplyLeaves.findById(leaveId);
       if (!leaveRequest) {
         return res.status(404).json({ message: 'Leave request not found' });
       }
   
-      // Update the leave status and the person who approved it
       leaveRequest.status = status;
       leaveRequest.approvedBy = approvedBy || leaveRequest.approvedBy;
   
@@ -78,4 +77,31 @@ const updateLeaveStatus = async (req, res) => {
     }
   };
 
-module.exports = { applyLeave, updateLeaveStatus };
+  const getLeavesByEmployee = async (req, res) => {
+    try {
+      const { employeeId } = req.body;
+  
+      if (!employeeId) {
+        return res.status(400).json({ message: 'Employee ID is required' });
+      }
+  
+      const leaves = await ApplyLeaves.find({ employeeId }).populate('approvedBy', ' personalDetails role email name');
+  
+      if (leaves.length === 0) {
+        return res.status(404).json({ message: 'No leave records found for this employee' });
+      }
+  
+      res.status(200).json({
+        message: 'Leave records fetched successfully',
+        leaves,
+      });
+    } catch (error) {
+      console.error('Error fetching leave records:', error);
+      res.status(500).json({
+        message: 'Internal server error',
+        error: error.message,
+      });
+    }
+  };
+
+module.exports = { applyLeave, updateLeaveStatus, getLeavesByEmployee};
