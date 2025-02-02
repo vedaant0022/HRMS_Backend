@@ -9,7 +9,7 @@ const ReimbursementSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      enum: ['travel', 'food', 'office supplies', 'medical', 'other'],
+      enum: ['Travel', 'Food', 'Office Supplies', 'Medical', 'Others'],
       required: true,
     },
     amount: {
@@ -21,23 +21,24 @@ const ReimbursementSchema = new mongoose.Schema(
     },
     documents: [
       {
-        name: { type: String }, // e.g., "Invoice", "Receipt"
-        url: { type: String }, // Cloud storage link
+        name: { type: String },
+        url: { type: String }, 
         uploadedAt: { type: Date, default: Date.now },
       },
     ],
     status: {
       type: String,
-      enum: ['pending', 'approved', 'rejected'],
-      default: 'pending',
+      enum: ['Pending', 'Approved', 'Rejected'],
+      default: 'Pending',
     },
     submittedAt: {
       type: Date,
+      
       default: Date.now,
     },
     approvedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // References the manager or HR who approved the reimbursement
+      ref: 'User',  
     },
   },
   { timestamps: true }
