@@ -1,6 +1,6 @@
 const express = require('express');
 const upload = require('../config/Multer.config');
-const { createUser, uploadDocuments, loginUser, getAllUsers, getLoggedInUserEmail, getUserDetails } = require('../controller/userController');
+const { createUser, uploadDocuments, loginUser,getUserDetails, changePassword, getuserDocs, deletedoc } = require('../controller/userController');
 const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
@@ -134,10 +134,10 @@ router.post('/create-user', createUser);
  *         description: Internal Server Error
  */
 router.post('/upload-documents/:id', upload.array('documents', 10), uploadDocuments);
-
-
 router.post('/login', loginUser);
 router.get('/me', authMiddleware, getUserDetails);
- 
+router.put('/change-password', authMiddleware, changePassword);
+router.get('/getdoc/:id', authMiddleware, getuserDocs)
+router.delete('/deletedocument/:userId/:publicId', authMiddleware, deletedoc);
 
 module.exports = router;

@@ -70,6 +70,7 @@ const uploadDocuments = async (req, res) => {
             const filename = req.body.filename || file.originalname;
 
             uploadedFiles.push({
+                publicId: cloudinaryResponse.public_id,
                 doctype: file.mimetype,
                 url: cloudinaryResponse.secure_url,
                 filename: filename,
@@ -115,7 +116,6 @@ const loginUser = async (req, res) => {
       }
   
       const token = jwt.sign(
-        // { userId: user._id, role: user.role },
         {User: user},
         JWT_SECRET,
         { expiresIn: '12h' }
@@ -124,7 +124,6 @@ const loginUser = async (req, res) => {
       res.status(200).json({
         message: 'Login successful',
         token,
-        // user
       });
     } catch (error) {
       console.error('Login error:', error);
@@ -149,7 +148,79 @@ const loginUser = async (req, res) => {
     }
 };
 
+const changePassword = async (req, res) =>{
+    try {
+        const { userId ,oldPassword, password, confirmpassword } = req.body;
+
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const isMatch = await bcrypt.compare(oldPassword, user.password);
+        if (!isMatch) return res.status(400).json({ message: 'Incorrect old password' });
+
+        if (password!== confirmpassword) 
+            return res.status(400).json({ message: 'Passwords do not match' });
+
+        const hashedPassword = await bcrypt.hash(confirmpassword, 10);
+        user.password = hashedPassword;
+        await user.save();
+
+        res.status(200).json({ message: 'Password updated successfully' });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    }
+}
+
+
+
+
+
+const getuserDocs = async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const user = await User.findById(userId);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        res.status(200).json({ message: 'Documents fetched successfully', documents: user.documents });
+    } catch (error) {
+        res.status(500).json({ message: 'Internal Server Error', error: error.message });
+    }
+}
+
+
+
+const deletedoc = async (req, res) => {
+    try {
+        const { userId, publicId } = req.params;
+
+        const decodedPublicId = decodeURIComponent(publicId);
+
+        if (!userId || !decodedPublicId) {
+            return res.status(400).json({ message: "User ID and Public ID are required" });
+        }
+
+        const cloudinaryResponse = await cloudinary.uploader.destroy(decodedPublicId);
+        if (cloudinaryResponse.result !== "ok") {
+            return res.status(400).json({ message: "Failed to delete document from Cloudinary" });
+        }
+
+        const user = await User.findByIdAndUpdate(userId, {
+            $pull: { documents: { publicId: decodedPublicId } },
+        }, { new: true });
+
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        res.status(200).json({ message: "Document deleted successfully" });
+
+    } catch (error) {
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+
+
 
 module.exports = {
-    createUser, uploadDocuments,loginUser,getUserDetails
+    createUser, uploadDocuments,loginUser,getUserDetails,changePassword,getuserDocs,deletedoc
 };

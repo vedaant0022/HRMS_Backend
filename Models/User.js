@@ -51,6 +51,7 @@ const UserSchema = new mongoose.Schema(
 
     documents: [
       {
+        publicId: { type: String },
         doctype: { type: String },
         url: { type: String },
         filename: { type: String }, 

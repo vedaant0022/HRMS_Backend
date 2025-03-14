@@ -9,6 +9,7 @@ const leaveRoutes = require('./routes/leaveRoutes.js')
 const ReimbursementRoutes = require('./routes/ReimbursementRoutes.js')
 const app = express()
 const port = process.env.PORT;
+
 app.use(express.json())
 app.use(cors())
 connectDB();
@@ -23,6 +24,7 @@ app.use('/api/reimbursement', ReimbursementRoutes);
 app.get('/',(req,res)=>{
     res.end("Welcome to HRMS Management System || Server is Live|| Port == "+port)
 })
+
 
 
 app.listen(port,()=>{
