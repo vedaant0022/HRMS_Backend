@@ -48,7 +48,15 @@ const applyLeave = async (req, res) => {
 const updateLeaveStatus = async (req, res) => {
     try {
       const { leaveId } = req.params;
-      const { status, approvedBy } = req.body;
+      const { id,status, approvedBy } = req.body;
+
+      const approver = await User.findById(id);
+        if (!approver) {
+            return res.status(404).json({ message: 'Approver not found' });
+        }
+        if (approver.role !== 'HR') {
+            return res.status(403).json({ message: 'Access denied. Only Admins can approve or reject Leaves' });
+        }
   
       if (!status || !['Approved', 'Rejected'].includes(status)) {
         return res.status(400).json({ message: 'Invalid status. Status must be "Approved" or "Rejected"' });

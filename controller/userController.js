@@ -115,7 +115,8 @@ const loginUser = async (req, res) => {
       }
   
       const token = jwt.sign(
-        { userId: user._id, role: user.role },
+        // { userId: user._id, role: user.role },
+        {User: user},
         JWT_SECRET,
         { expiresIn: '12h' }
       );
@@ -123,7 +124,7 @@ const loginUser = async (req, res) => {
       res.status(200).json({
         message: 'Login successful',
         token,
-        user
+        // user
       });
     } catch (error) {
       console.error('Login error:', error);
@@ -131,7 +132,24 @@ const loginUser = async (req, res) => {
     }
   };
 
+  const getUserDetails = async (req, res) => {
+    try {
+        const user = req.user; 
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({
+            message: 'User details fetched successfully',
+            user
+        });
+    } catch (error) {
+        console.error('Error fetching user details:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
+    }
+};
+
 
 module.exports = {
-    createUser, uploadDocuments,loginUser
+    createUser, uploadDocuments,loginUser,getUserDetails
 };

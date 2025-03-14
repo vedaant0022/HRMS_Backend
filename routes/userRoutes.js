@@ -1,6 +1,6 @@
 const express = require('express');
 const upload = require('../config/Multer.config');
-const { createUser, uploadDocuments, loginUser, getAllUsers, getLoggedInUserEmail } = require('../controller/userController');
+const { createUser, uploadDocuments, loginUser, getAllUsers, getLoggedInUserEmail, getUserDetails } = require('../controller/userController');
 const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
@@ -137,6 +137,7 @@ router.post('/upload-documents/:id', upload.array('documents', 10), uploadDocume
 
 
 router.post('/login', loginUser);
+router.get('/me', authMiddleware, getUserDetails);
  
 
 module.exports = router;
