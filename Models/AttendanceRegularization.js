@@ -12,10 +12,10 @@ const AttendanceRegularizationSchema = new mongoose.Schema(
       required: true,
     },
     clockIn: {
-      type: String, // Format: HH:mm (e.g., "09:00")
+      type: String, 
     },
     clockOut: {
-      type: String, // Format: HH:mm (e.g., "18:00")
+      type: String, 
     },
     reason: {
       type: String,
@@ -23,8 +23,8 @@ const AttendanceRegularizationSchema = new mongoose.Schema(
     },
     status: {
       type: String,
-      enum: ['pending', 'approved', 'rejected'],
-      default: 'pending',
+      enum: ['Pending', 'Approved', 'Rejected'],
+      default: 'Pending',
     },
     appliedAt: {
       type: Date,
@@ -32,7 +32,7 @@ const AttendanceRegularizationSchema = new mongoose.Schema(
     },
     approvedBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User', // References the manager or HR who approved the regularization
+      ref: 'User',
     },
   },
   { timestamps: true }

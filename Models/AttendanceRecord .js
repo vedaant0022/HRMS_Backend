@@ -13,11 +13,11 @@ const AttendanceRecordSchema = new mongoose.Schema(
     },
     clockIn: {
       type: String,  
-      required: true,
+      // required: true,
     },
     clockOut: {
       type: String,  
-      required: true,
+      // required: true,
     },
     totalHoursWorked: {
       type: Number, 
