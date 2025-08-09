@@ -26,7 +26,7 @@ app.use('/api/attendance', attendanceRoutes);
 app.use('/api/attendance-regularization', RegularizationRoutes);
 
 app.get('/', (req, res) => {
-    const port = process.env.PORT || 3000; // Ensure the port is defined if not already set
+    const port = process.env.PORT || 3000; 
     res.send(`
         <!DOCTYPE html>
         <html lang="en">
@@ -127,6 +127,7 @@ app.get('/', (req, res) => {
         </body>
         </html>
     `);
+
 });
 
 
