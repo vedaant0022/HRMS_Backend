@@ -21,7 +21,7 @@ const createUser = async (req, res) => {
 
         const newUser = new User({
             email,
-            password:hashedPassword,
+            password: hashedPassword,
             role,
             personalDetails,
             jobDetails,
@@ -98,42 +98,42 @@ const uploadDocuments = async (req, res) => {
 
 const loginUser = async (req, res) => {
     try {
-      const { email, password } = req.body;
-  
-      if (!email || !password) {
-        return res.status(400).json({ message: 'Email and password are required' });
-      }
+        const { email, password } = req.body;
 
-      const user = await User.findOne({ email: email.toLowerCase() });
-  
-      if (!user) {
-        return res.status(404).json({ message: 'User not found. Please register first.' });
-      }
-  
-      const isMatch = await bcrypt.compare(password, user.password);
-      if (!isMatch) {
-        return res.status(401).json({ message: 'Invalid credentials' });
-      }
-  
-      const token = jwt.sign(
-        {User: user},
-        JWT_SECRET,
-        // { expiresIn: '12h' }
-      );
-  
-      res.status(200).json({
-        message: 'Login successful',
-        token,
-      });
+        if (!email || !password) {
+            return res.status(400).json({ message: 'Email and password are required' });
+        }
+
+        const user = await User.findOne({ email: email.toLowerCase() });
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found. Please register first.' });
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
+
+        const token = jwt.sign(
+            { User: user },
+            JWT_SECRET,
+            // { expiresIn: '12h' }
+        );
+
+        res.status(200).json({
+            message: 'Login successful',
+            token,
+        });
     } catch (error) {
-      console.error('Login error:', error);
-      res.status(500).json({ message: 'Internal server error', error: error.message });
+        console.error('Login error:', error);
+        res.status(500).json({ message: 'Internal server error', error: error.message });
     }
-  };
+};
 
-  const getUserDetails = async (req, res) => {
+const getUserDetails = async (req, res) => {
     try {
-        const user = req.user; 
+        const user = req.user;
         if (!user) {
             return res.status(404).json({ message: 'User not found' });
         }
@@ -148,9 +148,9 @@ const loginUser = async (req, res) => {
     }
 };
 
-const changePassword = async (req, res) =>{
+const changePassword = async (req, res) => {
     try {
-        const { userId ,oldPassword, password, confirmpassword } = req.body;
+        const { userId, oldPassword, password, confirmpassword } = req.body;
 
         const user = await User.findById(userId);
         if (!user) return res.status(404).json({ message: 'User not found' });
@@ -158,7 +158,7 @@ const changePassword = async (req, res) =>{
         const isMatch = await bcrypt.compare(oldPassword, user.password);
         if (!isMatch) return res.status(400).json({ message: 'Incorrect old password' });
 
-        if (password!== confirmpassword) 
+        if (password !== confirmpassword)
             return res.status(400).json({ message: 'Passwords do not match' });
 
         const hashedPassword = await bcrypt.hash(confirmpassword, 10);
@@ -219,8 +219,76 @@ const deletedoc = async (req, res) => {
     }
 };
 
+const updateProfileImage = async (req, res) => {
+    try {
+        const { employeeId } = req.body;
+
+        if (!employeeId) {
+            return res.status(400).json({ message: "Employee ID is required" });
+        }
+
+        // Check if file exists
+        if (!req.file) {
+            return res.status(400).json({ message: "No image file uploaded" });
+        }
+
+        // Upload to Cloudinary
+        const cloudinaryResponse = await cloudinary.uploader.upload(req.file.path, {
+            folder: `HRMS/${employeeId}/ProfileImage`,
+            resource_type: "image",
+        });
+
+        // Find user
+        const user = await User.findById(employeeId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        // Save image URL to user profile
+        user.personalDetails.profileImage = cloudinaryResponse.secure_url;
+
+        await user.save();
+
+        res.status(200).json({
+            message: "Profile image updated successfully",
+            profileImage: user.personalDetails.profileImage,
+        });
+    } catch (error) {
+        console.error("Error updating profile image:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+};
+
+const updateCTC = async (req, res) => {
+    try {
+        const { employeeId, CTC } = req.body;
+
+        if (!employeeId) {
+            return res.status(400).json({ message: "Employee ID is required" });
+        }
+
+        const user = await User.findById(employeeId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        user.jobDetails.Salary = CTC + " CTC";
+
+        await user.save();
+        res.status(200).json({
+            message: "Profile image updated successfully",
+            profileImage: user.jobDetails.Salary,
+        });
+
+
+
+    } catch (error) {
+        console.error("Error updating CTC:", error);
+        res.status(500).json({ message: "Internal Server Error", error: error.message });
+    }
+}
 
 
 module.exports = {
-    createUser, uploadDocuments,loginUser,getUserDetails,changePassword,getuserDocs,deletedoc
+    createUser, uploadDocuments, loginUser, getUserDetails, changePassword, getuserDocs, deletedoc, updateProfileImage, updateCTC
 };

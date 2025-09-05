@@ -1,6 +1,6 @@
 const express = require('express');
 const upload = require('../config/Multer.config');
-const { createUser, uploadDocuments, loginUser,getUserDetails, changePassword, getuserDocs, deletedoc } = require('../controller/userController');
+const { createUser, uploadDocuments, loginUser,getUserDetails, changePassword, getuserDocs, deletedoc, updateProfileImage, updateCTC } = require('../controller/userController');
 const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
@@ -139,5 +139,8 @@ router.get('/me', authMiddleware, getUserDetails);
 router.put('/change-password', authMiddleware, changePassword);
 router.get('/getdoc/:id', authMiddleware, getuserDocs)
 router.delete('/deletedocument/:userId/:publicId', authMiddleware, deletedoc);
+router.post("/update-profile-image", upload.single("image"), updateProfileImage);
+router.post("/updateCTC", authMiddleware, updateCTC);
+
 
 module.exports = router;

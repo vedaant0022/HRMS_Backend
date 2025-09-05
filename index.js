@@ -9,6 +9,7 @@ const leaveRoutes = require('./routes/leaveRoutes.js')
 const ReimbursementRoutes = require('./routes/ReimbursementRoutes.js')
 const attendanceRoutes = require('./routes/attendanceRoutes.js')
 const RegularizationRoutes = require('./routes/RegularizationRoutes.js')
+const feedbackRoutes = require('./routes/feedbackRoutes.js')
 const app = express()
 const port = process.env.PORT;
 
@@ -16,6 +17,7 @@ app.use(express.json())
 app.use(cors())
 connectDB();
 
+// This is my demo push 
 
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
@@ -24,6 +26,7 @@ app.use('/api/leaves', leaveRoutes);
 app.use('/api/reimbursement', ReimbursementRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/attendance-regularization', RegularizationRoutes);
+app.use('/api/feedback', feedbackRoutes);
 
 app.get('/', (req, res) => {
     const port = process.env.PORT || 3000; 

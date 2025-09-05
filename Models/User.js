@@ -26,6 +26,7 @@ const UserSchema = new mongoose.Schema(
       lastName: { type: String, required: true },
       phone: { type: String },
       dob: { type: Date },
+      profileImage: { type: String },
       address: {
         residence: { type: String },
         city: { type: String },
@@ -39,6 +40,7 @@ const UserSchema = new mongoose.Schema(
       designation: { type: String },
       department: { type: String },
       dateOfJoining: { type: Date },
+      Salary: { type: String },
       managerId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -54,7 +56,7 @@ const UserSchema = new mongoose.Schema(
         publicId: { type: String },
         doctype: { type: String },
         url: { type: String },
-        filename: { type: String }, 
+        filename: { type: String },
         uploadedAt: { type: Date, default: Date.now },
       },
     ],
