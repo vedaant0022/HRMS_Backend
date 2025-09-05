@@ -33,7 +33,6 @@ const ReimbursementSchema = new mongoose.Schema(
     },
     submittedAt: {
       type: Date,
-      
       default: Date.now,
     },
     approvedBy: {
