@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Reimbursement = require("../Models/Reimbursement");
 const User = require("../Models/User");
 const cloudinary = require('../config/cloudinary');
@@ -5,8 +6,8 @@ const cloudinary = require('../config/cloudinary');
 const applyReimbursement = async (req, res) => {
     try {
         const { category, amount, description } = req.body;
-        const employeeId = req.user.userId;
-        const folder = `HRMS/${employeeId}/Reimbursements/`; 
+        const employeeId = req.user.User._id;
+        const folder = `HRMS/${employeeId}/Reimbursements/`;
 
         if (!category || !amount) {
             return res.status(400).json({ message: 'Category and amount are required' });
@@ -14,6 +15,10 @@ const applyReimbursement = async (req, res) => {
 
         if (!req.files || req.files.length === 0) {
             return res.status(400).json({ message: 'No files uploaded' });
+        }
+
+        if (!employeeId) {
+            return res.status(400).json({ message: 'No Employee ID Found' });
         }
 
         const uploadedFiles = await Promise.all(req.files.map(async (file) => {
@@ -58,7 +63,7 @@ const applyReimbursement = async (req, res) => {
 const updateReimbursementStatus = async (req, res) => {
     try {
         const { reimbursementId, status } = req.body;
-        const approverId = req.user.userId; 
+        const approverId = req.user.userId;
 
         const approver = await User.findById(approverId);
         if (!approver) {
@@ -92,13 +97,43 @@ const updateReimbursementStatus = async (req, res) => {
     }
 };
 
+// const getReimbursementsByEmployeeId = async (req, res) => {
+//     try {
+//         const employeeId = req.user.userId; 
+//         // console.log("EMP ID >>", employeeId)
+//         console.log("Type of EMP ID:", typeof employeeId);
+
+//         const reimbursements = await Reimbursement.find({ employeeId })
+//             .populate('approvedBy', 'name email') 
+//             .sort({ submittedAt: -1 }); 
+
+//         if (!reimbursements || reimbursements.length === 0) {
+//             return res.status(404).json({ message: 'No reimbursements found for this employee' });
+//         }
+
+//         res.status(200).json({
+//             message: 'Reimbursements fetched successfully',
+//             reimbursements,
+//         });
+//     } catch (error) {
+//         console.error('Error fetching reimbursements:', error);
+//         res.status(500).json({ message: 'Internal server error', error: error.message });
+//     }
+// };
+
+
 const getReimbursementsByEmployeeId = async (req, res) => {
     try {
-        const employeeId = req.user.userId; 
+        const employeeId = req.user.User._id;
+        console.log("EMP ID from Token >>>", employeeId);
+
+        if (!employeeId) {
+            return res.status(401).json({ message: 'No USER ID FOUND' });
+        }
 
         const reimbursements = await Reimbursement.find({ employeeId })
-            .populate('approvedBy', 'name email') 
-            .sort({ submittedAt: -1 }); 
+            .populate('approvedBy', 'name email')
+            .sort({ submittedAt: -1 });
 
         if (!reimbursements || reimbursements.length === 0) {
             return res.status(404).json({ message: 'No reimbursements found for this employee' });
@@ -117,14 +152,14 @@ const getReimbursementsByEmployeeId = async (req, res) => {
 
 const getAllReimbursements = async (req, res) => {
     try {
-        const userRole = req.user.role; 
+        const userRole = req.user.role;
         if (userRole !== 'Admin') {
             return res.status(403).json({ message: 'Access denied. Only admin can view all reimbursements.' });
         }
         const reimbursements = await Reimbursement.find()
-            .populate('employeeId', 'name email') 
-            .populate('approvedBy', 'name email') 
-            .sort({ submittedAt: -1 }); 
+            .populate('employeeId', 'name email')
+            .populate('approvedBy', 'name email')
+            .sort({ submittedAt: -1 });
 
         if (!reimbursements || reimbursements.length === 0) {
             return res.status(404).json({ message: 'No reimbursements found in the system' });

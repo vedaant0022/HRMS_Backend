@@ -5,7 +5,23 @@ const upload = require('../config/Multer.config');
 
 const router = express.Router();
 
-router.post('/apply', authMiddleware, upload.array('documents', 10), applyReimbursement);
+// router.post('/apply', authMiddleware, upload.array('documents', 10), applyReimbursement);
+router.post(
+    '/apply',
+    authMiddleware,
+    (req, res, next) => {
+        upload.array('documents', 10)(req, res, (err) => {
+            if (err) {
+                return res.status(400).json({
+                    message: 'File upload error',
+                    error: err.message || String(err),
+                });
+            }
+            next();
+        });
+    },
+    applyReimbursement
+);
 router.post('/updatestatus', authMiddleware, updateReimbursementStatus);
 router.get('/listreimbursement', authMiddleware, getReimbursementsByEmployeeId);
 router.get('/adminlist', authMiddleware, getAllReimbursements);
