@@ -9,12 +9,14 @@ const leaveRoutes = require('./routes/leaveRoutes.js')
 const ReimbursementRoutes = require('./routes/ReimbursementRoutes.js')
 const attendanceRoutes = require('./routes/attendanceRoutes.js')
 const RegularizationRoutes = require('./routes/RegularizationRoutes.js')
-const feedbackRoutes = require('./routes/feedbackRoutes.js')
+const feedbackRoutes = require('./routes/feedbackRoutes.js');
+const bodyParser = require('body-parser');
 const app = express()
 const port = process.env.PORT;
 
 app.use(express.json())
 app.use(cors())
+app.use(bodyParser.json())
 connectDB();
 
 // This is my demo push 

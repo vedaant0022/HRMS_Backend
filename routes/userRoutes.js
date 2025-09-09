@@ -139,7 +139,7 @@ router.get('/me', authMiddleware, getUserDetails);
 router.put('/change-password', authMiddleware, changePassword);
 router.get('/getdoc/:id', authMiddleware, getuserDocs)
 router.delete('/deletedocument/:userId/:publicId', authMiddleware, deletedoc);
-router.post("/update-profile-image", upload.single("image"), updateProfileImage);
+router.post("/update-profile-image", upload.single("profileImage"), updateProfileImage);
 router.post("/updateCTC", authMiddleware, updateCTC);
 
 
